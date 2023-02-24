@@ -4,11 +4,36 @@
 #include <string>
 
 enum class LogLevel {
-	Info    = 100,
-	Debug   = 200,
-	Warning = 300,
-	Error   = 400
+	Any      = 000,
+	Info     = 100,
+	Debug    = 200,
+	Warning  = 300,
+	Error    = 400,
+	Critical = 500
 };
+
+
+class ILogOutput {
+public:
+	ILogOutput() = delete;
+	~ILogOutput() = delete;
+	virtual void Write() = 0; 
+};
+
+
+class LogConfig {
+public:
+	void AddLogOutput(ILogOutput output) {
+		m_logOutputs.emplace_back(output);
+	}
+
+private:
+	bool m_logEnabled;                      //!< Enable/Disable logging.
+	LogLevel m_minLogLevel = LogLevel::Any; //!< Only log messages with severity above this.
+	std::vector<ILogOutput> m_logOutputs;   //!< Where to write the log data to.
+};
+
+
 
 class LogEntry{
 public:
@@ -30,15 +55,15 @@ public:
 
 private:
 	LogLevel m_level;
-
-	// TODO: Do i want this separate? Just append immediately..
-	std::vector<std::string> m_textInputs;
+	std::vector<std::string> m_textInputs;  // TODO: Do i want this separate? Just append immediately..
 };
 
 
 class Logger {
 public:
-	Logger() = default;
+	Logger(LogConfig& config) : m_config(config)
+	{}
+	
 	~Logger() {
 		for(const auto& entry: m_entries) {
 			// TODO: Have multiple options how to output
@@ -52,5 +77,6 @@ public:
 	}
 
 private:
-	std::vector<LogEntry> m_entries;
+	LogConfig& m_config;              //!< Configuration by which this logger object should adhere.
+	std::vector<LogEntry> m_entries;  //!< List of log entries received.
 };
