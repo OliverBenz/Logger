@@ -5,8 +5,8 @@ include(CustomCommands.cmake)
 set(targetName "Logger")
 
 # Get files to build
-set(headers Logger.hpp)
-set(sources main.cpp)
+set(headers Logger.hpp LogEntry.hpp LogConfig.hpp ILogOutput.hpp LogLevel.hpp)
+set(sources main.cpp Logger.cpp LogEntry.cpp LogConfig.cpp)
 
 # Create library
 add_executable(${targetName}
