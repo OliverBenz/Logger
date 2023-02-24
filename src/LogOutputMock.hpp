@@ -10,7 +10,7 @@ public:
 	void Write(const std::vector<LogEntry>& logEntries) override;
     void Write(const LogEntry& entry) override;
 
-private:
+public:
     std::vector<LogEntry> m_logEntries;
 };
 
