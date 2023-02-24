@@ -1,7 +1,9 @@
 #include "Logger.hpp"
 
+#include <iostream>
+
 namespace Logging {
-    
+
 Logger::Logger(LogConfig& config) : m_config(config)
 {}
 
