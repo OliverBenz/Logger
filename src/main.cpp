@@ -4,7 +4,6 @@
 #include "LogOutputConsole.hpp"
 #include "LogOutputMock.hpp"
 
-
 // TODO: This main function can be a unit test
 // TODO: Disable logging efficiently
 // TODO: Log to file (LogOutputFile class (Thread safe))
