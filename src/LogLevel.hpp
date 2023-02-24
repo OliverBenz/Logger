@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace Logging {
 
 enum class LogLevel {
@@ -10,5 +12,7 @@ enum class LogLevel {
 	Error    = 400,
 	Critical = 500
 };
+
+std::string LevelToText(LogLevel level);
 
 }

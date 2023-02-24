@@ -1,5 +1,8 @@
 #pragma once
 
+#include "LogEntry.hpp"
+#include <vector>
+
 namespace Logging {
 
 //! Defines what functionality a log output has to define.
@@ -15,7 +18,8 @@ protected:
 public:
     virtual ~ILogOutput() = default;
 
-	virtual void Write() = 0; 
+    //! Write the logEntries to the desired output.
+	virtual void Write(const std::vector<LogEntry>& logEntries) = 0;
 };
 
 }

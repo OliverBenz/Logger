@@ -3,7 +3,7 @@
 #include "LogLevel.hpp"
 
 #include <string>
-#include <vector>
+#include <sstream>
 
 namespace Logging {
 
@@ -17,10 +17,9 @@ public:
     //! Returns the logged text.
 	std::string LoggedText() const;
 
-private:
-	LogLevel m_level;                       //!< Log level of this one entry.
-	std::vector<std::string> m_textInputs;  //!< All log entries.
-    // TODO: Do i want this separate? Just append immediately..
+public:
+	LogLevel m_level;   //!< Log level of this one entry.
+	std::string m_text; //!< All log entries.
 };
 
 }

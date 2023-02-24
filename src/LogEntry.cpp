@@ -6,16 +6,12 @@ LogEntry::LogEntry(LogLevel level) : m_level(level)
 {}
 
 LogEntry& LogEntry::operator<<(const std::string& text) {
-    m_textInputs.emplace_back(text);
+    m_text += text;
     return *this;
 }
 
 std::string LogEntry::LoggedText() const {
-    std::string result;
-    for (const auto& entry : m_textInputs) {
-        result += entry;
-    }
-    return result;
+    return m_text;
 }
 
 }
