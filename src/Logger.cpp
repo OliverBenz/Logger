@@ -1,16 +1,13 @@
 #include "Logger.hpp"
 
-#include <iostream>
-
 namespace Logging {
 
 Logger::Logger(LogConfig& config) : m_config(config)
 {}
 
 Logger::~Logger() {
-    for(const auto& entry: m_entries) {
-        // TODO: Have multiple options how to output
-        std::cout << entry.LoggedText() << std::endl;
+    for (const auto& output : m_config.LogOutputs()) {
+        output->Write(m_entries);
     }
 }
 

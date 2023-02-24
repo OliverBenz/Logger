@@ -14,6 +14,11 @@ public:
     //! Add a new log sink to the configuration.
 	void AddLogOutput(std::shared_ptr<ILogOutput> output);
 
+	const std::vector<std::shared_ptr<ILogOutput>>& LogOutputs();
+
+	//! Get if the logging is enabled of not. 
+	bool LoggingEnabled() const;
+
 private:
 	bool m_logEnabled;                                      //!< Enable/Disable logging.
 	LogLevel m_minLogLevel = LogLevel::Any;                 //!< Only log messages with severity above this.

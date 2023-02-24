@@ -18,8 +18,11 @@ protected:
 public:
     virtual ~ILogOutput() = default;
 
-    //! Write the logEntries to the desired output.
+    //! Write multiple log entries to the desired output.
 	virtual void Write(const std::vector<LogEntry>& logEntries) = 0;
+    
+    //! Write a single log entry to the desired output.
+    virtual void Write(const LogEntry& entry) = 0;
 };
 
 }
