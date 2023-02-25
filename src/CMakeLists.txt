@@ -16,6 +16,7 @@ add_library(${targetName} STATIC
 
 # Link to thread module.
 target_link_libraries(${targetName} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(${targetName} PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
 # Setup project settings

@@ -22,7 +22,7 @@ int main(){
 
 	std::cout << "\nMockData:\n";
 	for (const auto& entry : mock->m_logEntries){
-		std::cout << LevelToText(entry.m_level) + " " + entry.m_text + "\n";
+		std::cout << LevelToText(entry.GetLevel()) + " " + entry.GetText() + "\n";
 	}
 
 	return 0;

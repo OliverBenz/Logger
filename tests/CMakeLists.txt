@@ -10,8 +10,6 @@ set(sources
     )
 set(headers )
 
-include_directories("../src/")
-
 # Create executable
 add_executable(${targetName}
     ${sources}
