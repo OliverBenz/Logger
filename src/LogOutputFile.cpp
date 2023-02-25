@@ -4,12 +4,12 @@
 
 namespace Logging {
 
-LogOutputFile::LogOutputFile(const std::string& fileName) : m_fileName(fileName)
+LogOutputFile::LogOutputFile(const std::string& filePath) : m_filePath(filePath)
 {}
 
 void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
     std::ofstream outfile;
-    outfile.open(m_fileName.c_str(), std::ios::out | std::ios::app);
+    outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
     if (outfile.fail()) {
         //throw std::ios_base::failure(std::stderror(-1));
     }
@@ -21,12 +21,16 @@ void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 
 void LogOutputFile::Write(const LogEntry& entry) {
     std::ofstream outfile;
-    outfile.open(m_fileName.c_str(), std::ios::out | std::ios::app);
+    outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
     if (outfile.fail()) {
         // throw std::ios_base::failure(std::stderror(-1));
     }
 
     outfile << entry.OutputText() << "\n";
+}
+
+std::string LogOutputFile::FilePath() const {
+    return m_filePath;
 }
 
 }
