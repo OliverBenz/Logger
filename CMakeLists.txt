@@ -14,4 +14,7 @@ include(cmake/CustomCommands.cmake)
 
 
 add_subdirectory(src)
-# add_subdirectory(examples)
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

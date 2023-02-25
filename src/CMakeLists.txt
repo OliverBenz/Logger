@@ -8,7 +8,7 @@ file(GLOB headers CONFIGURE_DEPENDS "*.hpp")
 file(GLOB sources CONFIGURE_DEPENDS "*.cpp")
 
 # Create executable
-add_executable(${targetName}
+add_library(${targetName} STATIC
     # Common modules
     ${headers}
     ${sources}

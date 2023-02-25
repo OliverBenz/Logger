@@ -15,7 +15,10 @@ public:
 	LogEntry& operator<<(const std::string& text);
 
     //! Returns the logged text.
-	std::string LoggedText() const;
+	std::string GetText() const;
+
+	//! Returns the logged text formatted with the log level.
+	std::string OutputText() const;
 
 public:
 	LogLevel m_level;   //!< Log level of this one entry.

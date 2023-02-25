@@ -10,8 +10,12 @@ LogEntry& LogEntry::operator<<(const std::string& text) {
     return *this;
 }
 
-std::string LogEntry::LoggedText() const {
+std::string LogEntry::GetText() const {
     return m_text;
+}
+
+std::string LogEntry::OutputText() const {
+    return LevelToText(m_level) + " " + m_text;  
 }
 
 }
