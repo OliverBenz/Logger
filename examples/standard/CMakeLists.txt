@@ -14,7 +14,7 @@ add_executable(${targetName}
 )
 
 # Link to required libraries
-target_link_libraries(${targetName} PUBLIC Logger)
+target_link_libraries(${targetName} PUBLIC Logging)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderExamples}")
 
 # Setup project settings

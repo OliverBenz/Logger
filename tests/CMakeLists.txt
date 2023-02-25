@@ -17,7 +17,7 @@ add_executable(${targetName}
 )
 
 # Link to required libraries
-target_link_libraries(${targetName} PUBLIC Logger gtest_main)
+target_link_libraries(${targetName} PUBLIC Logging gtest_main)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
 # Setup project settings

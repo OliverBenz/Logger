@@ -1,11 +1,11 @@
 find_package(Threads)
 
 # Settings
-set(targetName Logger)
+set(targetName Logging)
 
 # Get files to build
-file(GLOB headers CONFIGURE_DEPENDS "*.hpp")
-file(GLOB sources CONFIGURE_DEPENDS "*.cpp")
+file(GLOB_RECURSE headers CONFIGURE_DEPENDS "*.hpp")
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "*.cpp")
 
 # Create executable
 add_library(${targetName} STATIC
@@ -16,7 +16,7 @@ add_library(${targetName} STATIC
 
 # Link to thread module.
 target_link_libraries(${targetName} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
-target_include_directories(${targetName} PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(${targetName} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
 # Setup project settings
