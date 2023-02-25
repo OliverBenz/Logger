@@ -8,6 +8,8 @@ LogOutputFile::LogOutputFile(const std::string& filePath) : m_filePath(filePath)
 {}
 
 void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
+    std::unique_lock<std::mutex> lock(m_writeLock);
+
     std::ofstream outfile;
     outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
     if (outfile.fail()) {
@@ -20,6 +22,8 @@ void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 }
 
 void LogOutputFile::Write(const LogEntry& entry) {
+    std::unique_lock<std::mutex> lock(m_writeLock);
+    
     std::ofstream outfile;
     outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
     if (outfile.fail()) {

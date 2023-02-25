@@ -35,10 +35,12 @@ TEST(LogOutput, Mock) {
 }
 
 TEST(LogOutput, File) {
-    auto logFile = std::make_shared<LogOutputFile>("Log.txt");
+    auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt");
+	auto logFile2 = std::make_shared<LogOutputFile>("Log2.txt");
 
     LogConfig config;
-	config.AddLogOutput(logFile);
+	config.AddLogOutput(logFile1);
+	config.AddLogOutput(logFile2);
 
 	{
 		Logger logger = Logger(config);
@@ -47,8 +49,11 @@ TEST(LogOutput, File) {
 		logger << LogLevel::Error << "Error text";
 	}
 
+	// TODO: Read file for output
+
 	// Cleanup
-	EXPECT_EQ(std::remove(logFile->FilePath().c_str()), 0);
+	EXPECT_EQ(std::remove(logFile1->FilePath().c_str()), 0);
+	EXPECT_EQ(std::remove(logFile2->FilePath().c_str()), 0);
 }
 
 }

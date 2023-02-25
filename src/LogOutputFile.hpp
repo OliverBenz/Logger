@@ -2,6 +2,7 @@
 
 #include "ILogOutput.hpp"
 #include <string>
+#include <mutex>
 
 namespace Logging {
 
@@ -16,7 +17,8 @@ public:
     std::string FilePath() const;
 
 private:
-    std::string m_filePath;
+    std::string m_filePath;  //!< Path to the log file.
+    std::mutex m_writeLock;  //!< Lock so file is only opened on one thread.
 };
 
 }
