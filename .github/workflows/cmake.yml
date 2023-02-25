@@ -32,6 +32,11 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Run Tests
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/build/out/bin
       shell: bash
-      run: ./out/bin/Logger.GTest
+      run: ./Logger.GTest
+
+    - name: Run Examples
+      working-directory: ${{runner.workspace}}/build/out/bin
+      shell: bash
+      run: ./Example.Standard
