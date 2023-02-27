@@ -34,7 +34,7 @@ TEST(LogOutput, Mock) {
 	EXPECT_EQ(mock->m_logEntries[2].GetLevel(), LogLevel::Error);
 }
 
-TEST(LogOutput, File) {
+TEST(LogOutput, FileBasic) {
     auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt");
 	auto logFile2 = std::make_shared<LogOutputFile>("Log2.txt");
 
@@ -49,12 +49,35 @@ TEST(LogOutput, File) {
 		logger << LogLevel::Error << "Error text";
 	}
 
-	// TODO: Read file for output
+	// TODO: Read both files and check output
 
 	// Cleanup
 	EXPECT_EQ(std::remove(logFile1->FilePath().c_str()), 0);
 	EXPECT_EQ(std::remove(logFile2->FilePath().c_str()), 0);
 }
+
+TEST(LogOutput, FileMaxSize) {
+    auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt", 500);
+	auto logFile2 = std::make_shared<LogOutputFile>("Log2.txt", 200);
+
+    LogConfig config;
+	config.AddLogOutput(logFile1);
+	config.AddLogOutput(logFile2);
+
+	{
+		Logger logger = Logger(config);
+		logger << LogLevel::Info << "This" << " is" << " a" << " test.";
+		logger << LogLevel::Debug << "Debug" << " Entry";
+		logger << LogLevel::Error << "Error text";
+	}
+
+	// TODO: Check approx filesize of both files and read output
+
+	// Cleanup
+	EXPECT_EQ(std::remove(logFile1->FilePath().c_str()), 0);
+	EXPECT_EQ(std::remove(logFile2->FilePath().c_str()), 0);
+}
+
 
 }
 }
