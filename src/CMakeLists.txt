@@ -29,8 +29,8 @@ copy_headers_to_output("${targetName}" "${headers}" "")
 
 # Specify version
 target_compile_definitions(${targetName} PUBLIC VERSION_MAJOR=0)
-target_compile_definitions(${targetName} PUBLIC VERSION_MINOR=0)
-target_compile_definitions(${targetName} PUBLIC VERSION_PATCH=1)
+target_compile_definitions(${targetName} PUBLIC VERSION_MINOR=1)
+target_compile_definitions(${targetName} PUBLIC VERSION_PATCH=0)
 
 # System installation
 # install(TARGETS ${targetName} DESTINATION lib)
