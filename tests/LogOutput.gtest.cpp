@@ -5,6 +5,8 @@
 #include "LogOutputConsole.hpp"
 #include "LogOutputMock.hpp"
 #include "LogOutputFile.hpp"
+#include <filesystem>
+#include <fstream>
 
 namespace Logging {
 namespace GTest {
@@ -42,6 +44,27 @@ TEST(LogOutput, FileBasic) {
 	config.AddLogOutput(logFile1);
 	config.AddLogOutput(logFile2);
 
+	std::array<std::string, 3> expectOutput {
+		"[Info] This is a test.",
+		"[Debug] Debug Entry",
+		"[Error] Error text"
+	};
+
+	//! Lambda to check a files content is the expectedOutput.
+	auto compareExpect = [&expectOutput](const std::string& fileName) {
+		// Read file and compare
+		std::ifstream file(fileName.c_str());
+		unsigned counter = 0;
+		std::string text;
+		while(getline(file, text)) {
+			// line contains the timestap so we use .find()
+			EXPECT_TRUE(text.find(expectOutput[counter]) != std::string::npos);
+			++counter;
+		}
+		file.close();
+	};
+
+	// Write data to file
 	{
 		Logger logger = Logger(config);
 		logger << LogLevel::Info << "This" << " is" << " a" << " test.";
@@ -49,7 +72,9 @@ TEST(LogOutput, FileBasic) {
 		logger << LogLevel::Error << "Error text";
 	}
 
-	// TODO: Read both files and check output
+	// Check the file content is as expected
+	compareExpect(logFile1->FilePath());
+	compareExpect(logFile2->FilePath());
 
 	// Cleanup
 	EXPECT_EQ(std::remove(logFile1->FilePath().c_str()), 0);
@@ -57,27 +82,59 @@ TEST(LogOutput, FileBasic) {
 }
 
 TEST(LogOutput, FileMaxSize) {
-    auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt", 500);
-	auto logFile2 = std::make_shared<LogOutputFile>("Log2.txt", 200);
+	static constexpr std::uintmax_t maxSize = 50;
+    auto logFile = std::make_shared<LogOutputFile>("Logfile.txt", maxSize);
 
     LogConfig config;
-	config.AddLogOutput(logFile1);
-	config.AddLogOutput(logFile2);
+	config.AddLogOutput(logFile);
 
+	// With timestamp/loglevel, this string produces output > maxSize Bytes
+	const std::string testString('a', maxSize);
+
+	// Write to output file
+	{
+		Logger(config) << LogLevel::Info << testString;
+	}
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after next write
+	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Wrapping happens after a write
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
+
+	// Less than maxSize Bytes
+	{
+		Logger(config) << LogLevel::Info << "a";	
+	}
+	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));     // New write -> Create file again
+	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
+
+	// Fill the current log file
+	{
+		Logger(config) << LogLevel::Debug << testString;
+	}
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
+	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
+	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Newly created from write
+	EXPECT_FALSE(std::filesystem::exists("Logfile(3).txt"));  // Does not exist yet
+
+	// Fill two files worth (whole will be in one file -> One write operation)
 	{
 		Logger logger = Logger(config);
-		logger << LogLevel::Info << "This" << " is" << " a" << " test.";
-		logger << LogLevel::Debug << "Debug" << " Entry";
-		logger << LogLevel::Error << "Error text";
+		logger << LogLevel::Debug << testString;
+		logger << LogLevel::Debug << testString;
 	}
-
-	// TODO: Check approx filesize of both files and read output
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
+	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
+	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Still exists
+	EXPECT_TRUE(std::filesystem::exists("Logfile(3).txt"));  // Newly created from write -> One log write always to one file
+	EXPECT_FALSE(std::filesystem::exists("Logfile(4).txt"));  // Does not exist
 
 	// Cleanup
-	EXPECT_EQ(std::remove(logFile1->FilePath().c_str()), 0);
-	EXPECT_EQ(std::remove(logFile2->FilePath().c_str()), 0);
+	EXPECT_NE(std::remove("Logfile.txt"), 0);     // Does not exist
+	EXPECT_EQ(std::remove("Logfile(1).txt"), 0);
+	EXPECT_EQ(std::remove("Logfile(2).txt"), 0);
+	EXPECT_EQ(std::remove("Logfile(3).txt"), 0);
+	EXPECT_NE(std::remove("Logfile(4).txt"), 0);  // Does not exist
 }
-
 
 }
 }

@@ -16,10 +16,10 @@ void LogOutputFile::RotateFile() {
     const std::string ext = m_filePath.substr(pos+1);
 
     // New filename of logFile has postfix [number].
-    unsigned count = 0;
+    unsigned count = 1;
     std::string newFilePath;
     do {
-        newFilePath = path + "[" + std::to_string(count) + "]." + ext;
+        newFilePath = path + "(" + std::to_string(count) + ")." + ext;
         ++count;
     } while(std::filesystem::exists(newFilePath));
 
