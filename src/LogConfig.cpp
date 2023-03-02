@@ -14,5 +14,12 @@ bool LogConfig::LoggingEnabled() const {
     return m_logEnabled;
 }
 	
+void LogConfig::SetLogEnabled(const bool enable) {
+    m_logEnabled = enable;
+}
+
+void LogConfig::SetMinLogLevel(const LogLevel logLevel) {
+    m_minLogLevel = logLevel;
+}
 
 }

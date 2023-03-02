@@ -10,10 +10,16 @@ Logger::Logger(LogConfig& config) : m_config(config)
 {}
 
 Logger::~Logger() {
+    Flush();
+}
+
+void Logger::Flush() {
     for (const auto& output : m_config.LogOutputs()) {
         output->Write(m_entries);
     }
+    m_entries.clear();
 }
+
 
 void Logger::Log(const LogLevel level, const std::string& text) {
     if(!m_config.LoggingEnabled()) {

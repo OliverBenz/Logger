@@ -16,7 +16,8 @@ public:
 	//! The destructor logs the entries to the specified outputs.
 	~Logger();
 
-	// TODO: Allow intermediate output -> WriteLogEntries function; also clears the m_entries.
+	//! Manually write the log entries to the specified outputs.
+	void Flush();
 
 	//! Add a new log entry with the specified log level.
 	void Log(LogLevel level, const std::string& text);
