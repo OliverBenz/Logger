@@ -18,7 +18,7 @@ public:
 	// TODO: Allow intermediate output -> WriteLogEntries function; also clears the m_entries.
 
 	//! Add a new log entry with the specified log level.
-	LogEntry& operator<<(LogLevel level);
+	void Log(LogLevel level, const std::string& text);
 
 private:
 	LogConfig& m_config;              //!< Configuration by which this logger object should adhere.

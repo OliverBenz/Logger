@@ -1,5 +1,9 @@
 #include "Logger.hpp"
 
+#include <chrono>
+#include <sstream>
+#include <iomanip>
+
 namespace Logging {
 
 Logger::Logger(LogConfig& config) : m_config(config)
@@ -11,9 +15,14 @@ Logger::~Logger() {
     }
 }
 
-LogEntry& Logger::operator<<(LogLevel level) {
-    m_entries.emplace_back(LogEntry(level));
-    return m_entries.back();
+void Logger::Log(const LogLevel level, const std::string& text) {
+    // Get current time
+    const auto timeNow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::stringstream time;
+    time << std::put_time(std::localtime(&timeNow), "%d.%m.%Y %H:%M:%S");
+
+    LogEntry entry{level, text, time.str()};
+    m_entries.emplace_back(entry);
 }
 
 }
