@@ -20,7 +20,7 @@ public:
 	bool LoggingEnabled() const;
 
 private:
-	bool m_logEnabled;                                      //!< Enable/Disable logging.
+	bool m_logEnabled = true;                               //!< Enable/Disable logging.
 	LogLevel m_minLogLevel = LogLevel::Any;                 //!< Only log messages with severity above this.
 	std::vector<std::shared_ptr<ILogOutput>> m_logOutputs;  //!< Where to write the log data to.
 };
