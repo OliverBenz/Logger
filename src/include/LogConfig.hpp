@@ -19,6 +19,9 @@ public:
 	//! Get if the logging is enabled of not. 
 	bool LoggingEnabled() const;
 
+	void SetLogEnabled(bool enable);
+	void SetMinLogLevel(LogLevel logLevel);
+
 private:
 	bool m_logEnabled = true;                               //!< Enable/Disable logging.
 	LogLevel m_minLogLevel = LogLevel::Any;                 //!< Only log messages with severity above this.
