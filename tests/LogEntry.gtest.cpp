@@ -7,11 +7,10 @@ namespace Logging {
 namespace GTest {
 
 TEST(LogEntry, OutputFormat) {
-    LogEntry logEntry(LogLevel::Info);
-    logEntry << "This is a " << "test";
-    const std::string expected = "[Info] This is a test";
+    LogEntry logEntry{LogLevel::Info, "This is a test", "2023-02-03 15:47:00"};
+    const std::string expected = "2023-02-03 15:47:00 [Info] This is a test";
 
-    EXPECT_TRUE(logEntry.OutputText().find(expected) != std::string::npos);
+    EXPECT_STREQ(logEntry.OutputText().c_str(), expected.c_str());
 
 /*
     std::regex r("%d%d.%d%d.%d%d %d%d-%d%d-%d%d%d%d [%s] %s");

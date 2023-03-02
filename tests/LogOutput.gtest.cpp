@@ -19,21 +19,21 @@ TEST(LogOutput, Mock) {
 
 	{
 		Logger logger = Logger(config);
-		logger << LogLevel::Info << "This" << " is" << " a" << " test.";
-		logger << LogLevel::Debug << "Debug" << " Entry";
-		logger << LogLevel::Error << "Error text";
+		logger.Log(LogLevel::Info, "This is a test.");
+		logger.Log(LogLevel::Debug, "Debug Entry");
+		logger.Log(LogLevel::Error, "Error text");
 	}
 
     EXPECT_EQ(mock->m_logEntries.size(), 3);
     
-	EXPECT_STREQ(mock->m_logEntries[0].GetText().c_str(), "This is a test.");
-	EXPECT_EQ(mock->m_logEntries[0].GetLevel(), LogLevel::Info);
+	EXPECT_STREQ(mock->m_logEntries[0].m_text.c_str(), "This is a test.");
+	EXPECT_EQ(mock->m_logEntries[0].m_level, LogLevel::Info);
 
-    EXPECT_STREQ(mock->m_logEntries[1].GetText().c_str(), "Debug Entry");
-	EXPECT_EQ(mock->m_logEntries[1].GetLevel(), LogLevel::Debug);
+    EXPECT_STREQ(mock->m_logEntries[1].m_text.c_str(), "Debug Entry");
+	EXPECT_EQ(mock->m_logEntries[1].m_level, LogLevel::Debug);
 
-    EXPECT_STREQ(mock->m_logEntries[2].GetText().c_str(), "Error text");
-	EXPECT_EQ(mock->m_logEntries[2].GetLevel(), LogLevel::Error);
+    EXPECT_STREQ(mock->m_logEntries[2].m_text.c_str(), "Error text");
+	EXPECT_EQ(mock->m_logEntries[2].m_level, LogLevel::Error);
 }
 
 TEST(LogOutput, FileBasic) {
@@ -67,9 +67,9 @@ TEST(LogOutput, FileBasic) {
 	// Write data to file
 	{
 		Logger logger = Logger(config);
-		logger << LogLevel::Info << "This" << " is" << " a" << " test.";
-		logger << LogLevel::Debug << "Debug" << " Entry";
-		logger << LogLevel::Error << "Error text";
+		logger.Log(LogLevel::Info,"This is a test.");
+		logger.Log(LogLevel::Debug, "Debug Entry");
+		logger.Log(LogLevel::Error, "Error text");
 	}
 
 	// Check the file content is as expected
@@ -93,7 +93,7 @@ TEST(LogOutput, FileMaxSize) {
 
 	// Write to output file
 	{
-		Logger(config) << LogLevel::Info << testString;
+		Logger(config).Log(LogLevel::Info, testString);
 	}
 	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after next write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Wrapping happens after a write
@@ -101,7 +101,7 @@ TEST(LogOutput, FileMaxSize) {
 
 	// Less than maxSize Bytes
 	{
-		Logger(config) << LogLevel::Info << "a";	
+		Logger(config).Log(LogLevel::Info, "a");
 	}
 	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));     // New write -> Create file again
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
@@ -109,7 +109,7 @@ TEST(LogOutput, FileMaxSize) {
 
 	// Fill the current log file
 	{
-		Logger(config) << LogLevel::Debug << testString;
+		Logger(config).Log(LogLevel::Debug, testString);
 	}
 	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
@@ -119,8 +119,8 @@ TEST(LogOutput, FileMaxSize) {
 	// Fill two files worth (whole will be in one file -> One write operation)
 	{
 		Logger logger = Logger(config);
-		logger << LogLevel::Debug << testString;
-		logger << LogLevel::Debug << testString;
+		logger.Log(LogLevel::Debug, testString);
+		logger.Log(LogLevel::Debug, testString);
 	}
 	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists

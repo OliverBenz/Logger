@@ -18,14 +18,14 @@ int main(){
 
 	{
 		Logging::Logger logger = Logging::Logger(config);
-		logger << Logging::LogLevel::Info << "This" << " is" << " a" << " test.";
-		logger << Logging::LogLevel::Debug << "Debug" << " Entry";
-		logger << Logging::LogLevel::Error << "Error text";
+		logger.Log(Logging::LogLevel::Info, "This is a test.");
+		logger.Log(Logging::LogLevel::Debug, "Debug Entry");
+		logger.Log(Logging::LogLevel::Error, "Error text");
 	}
 
 	std::cout << "\nMockData:\n";
 	for (const auto& entry : mock->m_logEntries){
-		std::cout << LevelToText(entry.GetLevel()) + " " + entry.GetText() + "\n";
+		std::cout << LevelToText(entry.m_level) + " " + entry.m_text + "\n";
 	}
 
 	// Cleanup log file
