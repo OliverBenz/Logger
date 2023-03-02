@@ -26,6 +26,9 @@ void Logger::Log(const LogLevel level, const std::string& text) {
     time << std::put_time(std::localtime(&timeNow), "%d.%m.%Y %H:%M:%S");
 
     LogEntry entry{level, text, time.str()};
+    
+    // Thread safe vector access
+    std::unique_lock<std::mutex> lock(m_writeLock);
     m_entries.emplace_back(entry);
 }
 
