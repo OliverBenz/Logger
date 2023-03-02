@@ -16,6 +16,10 @@ Logger::~Logger() {
 }
 
 void Logger::Log(const LogLevel level, const std::string& text) {
+    if(!m_config.LoggingEnabled()) {
+        return;
+    }
+    
     // Get current time
     const auto timeNow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::stringstream time;
