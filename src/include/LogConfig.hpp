@@ -14,13 +14,20 @@ public:
     //! Add a new log sink to the configuration.
 	void AddLogOutput(std::shared_ptr<ILogOutput> output);
 
+	//! Get a list of all log outputs in the config.
 	const std::vector<std::shared_ptr<ILogOutput>>& LogOutputs();
+
+	//! Set if logging is enabled or not.
+	void SetLogEnabled(bool enable);
 
 	//! Get if the logging is enabled of not. 
 	bool LoggingEnabled() const;
 
-	void SetLogEnabled(bool enable);
+	//! Set the minimum log level to be output.
 	void SetMinLogLevel(LogLevel logLevel);
+
+	//! Get the minimum log level.
+	LogLevel MinLogLevel() const;
 
 private:
 	bool m_logEnabled = true;                               //!< Enable/Disable logging.
