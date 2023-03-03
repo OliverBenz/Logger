@@ -22,7 +22,7 @@ void Logger::Flush() {
 
 
 void Logger::Log(const LogLevel level, const std::string& text) {
-    if(!m_config.LoggingEnabled()) {
+    if(!m_config.LoggingEnabled() || level < m_config.MinLogLevel()) {
         return;
     }
     
