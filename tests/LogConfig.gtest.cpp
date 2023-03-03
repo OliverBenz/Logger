@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "Logger.hpp"
 #include "LogConfig.hpp"
 #include "LogOutputFile.hpp"
 #include "LogOutputMock.hpp"
@@ -9,17 +10,76 @@ namespace Logging {
 namespace GTest {
 
 TEST(LogConfig, DisableLogging) {
-    // TODO:
-    //  - Check enable/disable logging and entries not added if disabled
-    //  - Performance check -> Minimal overhead if logging is disabled
+	Logging::LogConfig config;
+	auto mock = std::make_shared<Logging::LogOutputMock>();
+	config.AddLogOutput(mock);
 
+	Logger logger(config);
+
+	// Disbled logging
+	config.SetLogEnabled(false);
+	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Debug, "Testing Entry 2");
+	logger.Log(LogLevel::Error, "Testing Entry 3");
+	logger.Flush();
+
+	EXPECT_EQ(mock->m_logEntries.size(), 0u);
+
+	// Enable logging
+	config.SetLogEnabled(true);
+	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Debug, "Testing Entry 2");
+	logger.Flush();
+
+	EXPECT_EQ(mock->m_logEntries.size(), 2u);
+
+	// Disbled logging
+	config.SetLogEnabled(false);
+	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Debug, "Testing Entry 2");
+	logger.Flush();
+
+	EXPECT_EQ(mock->m_logEntries.size(), 2u); // Still 2 entries
 }
 
 TEST(LogConfig, MinLogLevel) {
-    // TODO:
-    //  - Log with different log levels and check output correct
-    //  - Check log entry not added to list of entries if below minLogLevel
-    //  - Performance check -> Minimal overhead if loglevel too low 
+	Logging::LogConfig config;
+	auto mock = std::make_shared<Logging::LogOutputMock>();
+	config.AddLogOutput(mock);
+
+	Logger logger(config);
+
+	//! Add 5 log entries and check the mock contains the expected amount of entries.
+	const auto RunTest = [&](const std::size_t expectCount) {
+		logger.Log(LogLevel::Info,    "This is info.");
+		logger.Log(LogLevel::Debug,   "This is debug.");
+		logger.Log(LogLevel::Warning, "This is warning.");
+		logger.Log(LogLevel::Error,   "This is error.");
+		logger.Log(LogLevel::Critical,"This is critical.");
+		logger.Flush();
+
+		EXPECT_EQ(mock->m_logEntries.size(), expectCount);
+		mock->m_logEntries.clear();
+	};
+
+	// Minimum: Any by default
+	RunTest(5u);
+
+	// Minimum: Debug
+	config.SetMinLogLevel(LogLevel::Debug);
+	RunTest(4u);
+
+	// Minimum: Warning
+	config.SetMinLogLevel(LogLevel::Warning);
+	RunTest(3u);
+
+	// Minimum: Error
+	config.SetMinLogLevel(LogLevel::Error);
+	RunTest(2u);
+
+	// Minimum: Critical
+	config.SetMinLogLevel(LogLevel::Critical);
+	RunTest(1u);
 }
 
 TEST(LogConfig, LogOutputs) {
