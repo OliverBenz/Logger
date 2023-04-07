@@ -1,6 +1,3 @@
-find_package(Threads)
-
-# Settings
 set(targetName Logging)
 
 # Get files to build
@@ -15,7 +12,7 @@ add_library(${targetName} STATIC
 )
 
 # Link to thread module.
-target_link_libraries(${targetName} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${targetName} PRIVATE fmt)
 target_include_directories(${targetName} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
