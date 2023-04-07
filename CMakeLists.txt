@@ -8,10 +8,7 @@ option(BUILD_EXAMPLES "Create examples for the project." True)
 
 
 # Setup project settings
-include(lib/cmake/ProjectSettings.cmake)
-include(lib/cmake/CompilerWarnings.cmake)
-include(lib/cmake/CustomCommands.cmake)
-
+add_subdirectory(lib)
 
 add_subdirectory(src)
 if(BUILD_TESTS)
