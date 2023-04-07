@@ -1,9 +1,11 @@
 #include "LogEntry.hpp"
 
+#include <fmt/core.h>
+
 namespace Logging {
 
 std::string LogEntry::OutputText() const {
-    return m_time + " " + LevelToText(m_level) + " " + m_text;  
+    return fmt::format("{} {} {}", m_time, LevelToText(m_level), m_text);
 }
 
 }
