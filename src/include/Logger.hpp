@@ -25,7 +25,6 @@ public:
 private:
 	LogConfig& m_config;              //!< Configuration by which this logger object should adhere.
 	std::vector<LogEntry> m_entries;  //!< List of log entries received.
-	std::mutex m_writeLock;           //!< Ensure only one thread access m_logEntries at a time.
 };
 
 }
