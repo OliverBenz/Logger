@@ -8,10 +8,10 @@ namespace Logging {
 class LogOutputMock : public ILogOutput {
 public:
 	void Write(const std::vector<LogEntry>& logEntries) override;
-    void Write(const LogEntry& entry) override;
+	void Write(const LogEntry& entry) override;
 
 public:
-    std::vector<LogEntry> m_logEntries;
+	std::vector<LogEntry> m_logEntries;
 };
 
-}
+}  // namespace Logging
