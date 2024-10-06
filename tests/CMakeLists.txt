@@ -1,17 +1,11 @@
 set(targetName Logger.GTest)
-
-# Get files to build
-set(sources
+    
+add_executable(${targetName}
     ${CMAKE_CURRENT_LIST_DIR}/main.gtest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LogEntry.gtest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LogLevel.gtest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LogConfig.gtest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LogOutput.gtest.cpp
-    )
-    
-# Create executable
-add_executable(${targetName}
-    ${sources}
 )
 
 # Link to required libraries

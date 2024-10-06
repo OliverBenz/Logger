@@ -1,16 +1,10 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 
-# Settings
 set(targetName Example.Standard)
-
-# Get files to build
-set(sources ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
-set(headers )
 
 # Create executable
 add_executable(${targetName}
-    ${sources}
-    ${headers}
+    ${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
 # Link to required libraries
