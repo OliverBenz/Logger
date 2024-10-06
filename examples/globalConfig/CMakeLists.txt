@@ -1,21 +1,11 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 
-# Settings
 set(targetName Example.GlobalConfig)
 
-# Get files to build
-set(sources
+add_executable(${targetName}
     ${CMAKE_CURRENT_LIST_DIR}/main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/LogModule.cpp
-    )
-set(headers
     ${CMAKE_CURRENT_LIST_DIR}/LogModule.hpp
-    )
-
-# Create executable
-add_executable(${targetName}
-    ${sources}
-    ${headers}
 )
 
 # Link to required libraries

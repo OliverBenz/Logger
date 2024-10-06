@@ -4,15 +4,14 @@ set(targetName Logging)
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "*.hpp")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "*.cpp")
 
-# Create executable
+# Create library
 add_library(${targetName} STATIC
-    # Common modules
     ${headers}
     ${sources}
 )
 
 # Link to thread module.
-target_link_libraries(${targetName} PRIVATE fmt)
+target_link_libraries(${targetName})
 target_include_directories(${targetName} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
@@ -25,8 +24,8 @@ set_output_directory(${targetName})  # Set the output directory of the library
 copy_headers_to_output("${targetName}" "${headers}" "")
 
 # Specify version
-target_compile_definitions(${targetName} PUBLIC VERSION_MAJOR=0)
-target_compile_definitions(${targetName} PUBLIC VERSION_MINOR=1)
+target_compile_definitions(${targetName} PUBLIC VERSION_MAJOR=1)
+target_compile_definitions(${targetName} PUBLIC VERSION_MINOR=0)
 target_compile_definitions(${targetName} PUBLIC VERSION_PATCH=0)
 
 # System installation
