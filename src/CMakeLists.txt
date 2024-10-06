@@ -24,9 +24,9 @@ set_output_directory(${targetName})  # Set the output directory of the library
 copy_headers_to_output("${targetName}" "${headers}" "")
 
 # Specify version
-target_compile_definitions(${targetName} PUBLIC VERSION_MAJOR=1)
-target_compile_definitions(${targetName} PUBLIC VERSION_MINOR=0)
-target_compile_definitions(${targetName} PUBLIC VERSION_PATCH=0)
+target_compile_definitions(${targetName} PUBLIC LOGVERSION_MAJOR=1)
+target_compile_definitions(${targetName} PUBLIC LOGVERSION_MINOR=0)
+target_compile_definitions(${targetName} PUBLIC LOGVERSION_PATCH=0)
 
 # System installation
 # install(TARGETS ${targetName} DESTINATION lib)

@@ -6,7 +6,7 @@
 #include "LogOutputFile.hpp"
 
 int main(){
-	std::cout << "Version: " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_PATCH << std::endl;
+	std::cout << "Version: " << LOGVERSION_MAJOR << "." << LOGVERSION_MINOR << "." << LOGVERSION_PATCH << std::endl;
 	
 	static Logging::LogConfig config;
 	auto mock = std::make_shared<Logging::LogOutputMock>();

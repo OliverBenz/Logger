@@ -2,7 +2,7 @@
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
-#define VERSION_STRING "Version: " STR(VERSION_MAJOR) "." STR(VERSION_MINOR) "." STR(VERSION_PATCH) 
+#define VERSION_STRING "Version: " STR(LOGVERSION_MAJOR) "." STR(LOGVERSION_MINOR) "." STR(LOGVERSION_PATCH) 
 
 //! Example for logging.
 class Calculator {
