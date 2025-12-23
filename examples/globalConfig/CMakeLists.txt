@@ -9,7 +9,7 @@ add_executable(${targetName}
 )
 
 # Link to required libraries
-target_link_libraries(${targetName} PUBLIC Logging)
+target_link_libraries(${targetName} PUBLIC Logger::Logger)
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderExamples}")
 
 # Setup project settings
