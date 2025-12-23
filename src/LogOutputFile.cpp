@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <system_error>
 
 namespace Logging {
 
@@ -10,33 +11,33 @@ LogOutputFile::LogOutputFile(const std::string& filePath, std::size_t maxFileSiz
 }
 
 void LogOutputFile::RotateFile() {
-	// TODO: Test this function
-	std::size_t pos = m_filePath.rfind('.');
-	const std::string path = m_filePath.substr(0, pos);
-	const std::string ext = m_filePath.substr(pos + 1);
+	const std::filesystem::path originalPath(m_filePath);
+	const auto parent = originalPath.parent_path();
+	const auto stem = originalPath.stem().string();
+	const auto extension = originalPath.extension().string();
 
-	// New filename of logFile has postfix [number].
+	const auto baseName = extension.empty() ? originalPath.filename().string() : stem;
+
 	unsigned count = 1;
-	std::string newFilePath;
+	std::filesystem::path newFilePath;
 	do {
-		newFilePath = path + "(" + std::to_string(count) + ")." + ext;
+		auto rotatedName = baseName + "(" + std::to_string(count) + ")" + extension;
+		newFilePath = parent.empty() ? std::filesystem::path(rotatedName) : parent / rotatedName;
 		++count;
 	} while (std::filesystem::exists(newFilePath));
 
-	// The current file is renamed with the postfix.
-	if (!std::rename(m_filePath.c_str(), newFilePath.c_str()) == 0) {
-		// throw std::ios_base::failure(std::stderror(-1));
+	std::error_code ec;
+	std::filesystem::rename(originalPath, newFilePath, ec);
+	if (ec) {
+		throw std::filesystem::filesystem_error("Failed to rotate log file", originalPath, newFilePath, ec);
 	}
 }
 
 void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 	std::unique_lock<std::mutex> lock(m_writeLock);
 
-	std::ofstream outfile;
-	outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
-	if (outfile.fail()) {
-		// throw std::ios_base::failure(std::stderror(-1));
-	}
+	std::ofstream outfile(m_filePath, std::ios::out | std::ios::app);
+	outfile.exceptions(std::ios::failbit | std::ios::badbit);
 
 	for (const auto& entry: logEntries) {
 		outfile << entry.OutputText() << "\n";
@@ -53,11 +54,8 @@ void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 void LogOutputFile::Write(const LogEntry& entry) {
 	std::unique_lock<std::mutex> lock(m_writeLock);
 
-	std::ofstream outfile;
-	outfile.open(m_filePath.c_str(), std::ios::out | std::ios::app);
-	if (outfile.fail()) {
-		// throw std::ios_base::failure(std::stderror(-1));
-	}
+	std::ofstream outfile(m_filePath, std::ios::out | std::ios::app);
+	outfile.exceptions(std::ios::failbit | std::ios::badbit);
 
 	outfile << entry.OutputText() << "\n";
 

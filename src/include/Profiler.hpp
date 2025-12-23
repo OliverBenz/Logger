@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Logger.hpp"
+#include <chrono>
 
 namespace Logging {
 
