@@ -1,13 +1,13 @@
-#include <iostream>
-#include "Logger.hpp"
 #include "LogLevel.hpp"
 #include "LogOutputConsole.hpp"
-#include "LogOutputMock.hpp"
 #include "LogOutputFile.hpp"
+#include "LogOutputMock.hpp"
+#include "Logger.hpp"
+#include <iostream>
 
-int main(){
+int main() {
 	std::cout << "Version: " << LOGVERSION_MAJOR << "." << LOGVERSION_MINOR << "." << LOGVERSION_PATCH << std::endl;
-	
+
 	static Logging::LogConfig config;
 	auto mock = std::make_shared<Logging::LogOutputMock>();
 	auto logFile = std::make_shared<Logging::LogOutputFile>("Filename.txt");
@@ -24,7 +24,7 @@ int main(){
 	}
 
 	std::cout << "\nMockData:\n";
-	for (const auto& entry : mock->m_logEntries){
+	for (const auto& entry: mock->m_logEntries) {
 		std::cout << LevelToText(entry.m_level) + " " + entry.m_text + "\n";
 	}
 

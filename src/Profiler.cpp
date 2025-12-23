@@ -14,14 +14,16 @@ Profiler::Profiler(Logger logger, std::string identifier)
 Profiler::~Profiler() {
 	const auto now = std::chrono::steady_clock::now();
 	const auto timeMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_startTime).count();  // t in ms
-	m_logger.Log(Logging::LogLevel::Info, std::format("<-- {} END: ", m_identifier, timeMs));
+	m_logger.Log(Logging::LogLevel::Info, std::format("<-- {} END: {}ms", m_identifier, timeMs));
 }
 
 void Profiler::LogStep(const std::string& stepName) {
-	const auto timeMs =
-	        std::chrono::duration_cast<std::chrono::milliseconds>(m_lastTime - m_startTime).count();  // t in ms
-	m_logger.Log(Logging::LogLevel::Info, std::format("--- {} STEP {}: ", m_identifier, stepName, timeMs));
-	m_lastTime = std::chrono::steady_clock::now();
+	const auto now = std::chrono::steady_clock::now();
+	const auto stepMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastTime).count();  // t in ms
+	const auto totalMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_startTime).count();  // t in ms
+	m_logger.Log(Logging::LogLevel::Info,
+	             std::format("--- {} STEP {}: +{}ms ({}ms total)", m_identifier, stepName, stepMs, totalMs));
+	m_lastTime = now;
 }
 
 

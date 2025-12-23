@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
 
-#include "Logger.hpp"
 #include "LogConfig.hpp"
+#include "LogOutputConsole.hpp"
 #include "LogOutputFile.hpp"
 #include "LogOutputMock.hpp"
-#include "LogOutputConsole.hpp"
+#include "Logger.hpp"
 
 namespace Logging {
 namespace GTest {
@@ -18,7 +18,7 @@ TEST(LogConfig, DisableLogging) {
 
 	// Disbled logging
 	config.SetLogEnabled(false);
-	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Info, "Testing Entry 1");
 	logger.Log(LogLevel::Debug, "Testing Entry 2");
 	logger.Log(LogLevel::Error, "Testing Entry 3");
 	logger.Flush();
@@ -27,7 +27,7 @@ TEST(LogConfig, DisableLogging) {
 
 	// Enable logging
 	config.SetLogEnabled(true);
-	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Info, "Testing Entry 1");
 	logger.Log(LogLevel::Debug, "Testing Entry 2");
 	logger.Flush();
 
@@ -35,11 +35,11 @@ TEST(LogConfig, DisableLogging) {
 
 	// Disbled logging
 	config.SetLogEnabled(false);
-	logger.Log(LogLevel::Info,  "Testing Entry 1");
+	logger.Log(LogLevel::Info, "Testing Entry 1");
 	logger.Log(LogLevel::Debug, "Testing Entry 2");
 	logger.Flush();
 
-	EXPECT_EQ(mock->m_logEntries.size(), 2u); // Still 2 entries
+	EXPECT_EQ(mock->m_logEntries.size(), 2u);  // Still 2 entries
 }
 
 TEST(LogConfig, MinLogLevel) {
@@ -51,11 +51,11 @@ TEST(LogConfig, MinLogLevel) {
 
 	//! Add 5 log entries and check the mock contains the expected amount of entries.
 	const auto RunTest = [&](const std::size_t expectCount) {
-		logger.Log(LogLevel::Info,    "This is info.");
-		logger.Log(LogLevel::Debug,   "This is debug.");
+		logger.Log(LogLevel::Info, "This is info.");
+		logger.Log(LogLevel::Debug, "This is debug.");
 		logger.Log(LogLevel::Warning, "This is warning.");
-		logger.Log(LogLevel::Error,   "This is error.");
-		logger.Log(LogLevel::Critical,"This is critical.");
+		logger.Log(LogLevel::Error, "This is error.");
+		logger.Log(LogLevel::Critical, "This is critical.");
 		logger.Flush();
 
 		EXPECT_EQ(mock->m_logEntries.size(), expectCount);
@@ -98,5 +98,5 @@ TEST(LogConfig, LogOutputs) {
 	EXPECT_EQ(config.LogOutputs().size(), 5u);
 }
 
-}
-}
+}  // namespace GTest
+}  // namespace Logging

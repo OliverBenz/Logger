@@ -1,20 +1,22 @@
 #include "gtest/gtest.h"
 
-#include "Logger.hpp"
 #include "LogLevel.hpp"
 #include "LogOutputConsole.hpp"
-#include "LogOutputMock.hpp"
 #include "LogOutputFile.hpp"
+#include "LogOutputMock.hpp"
+#include "Logger.hpp"
+#include <array>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 namespace Logging {
 namespace GTest {
 
 TEST(LogOutput, Mock) {
-    auto mock = std::make_shared<LogOutputMock>();
+	auto mock = std::make_shared<LogOutputMock>();
 
-    LogConfig config;
+	LogConfig config;
 	config.AddLogOutput(mock);
 
 	{
@@ -24,31 +26,58 @@ TEST(LogOutput, Mock) {
 		logger.Log(LogLevel::Error, "Error text");
 	}
 
-    EXPECT_EQ(mock->m_logEntries.size(), 3);
-    
+	EXPECT_EQ(mock->m_logEntries.size(), 3);
+
 	EXPECT_STREQ(mock->m_logEntries[0].m_text.c_str(), "This is a test.");
 	EXPECT_EQ(mock->m_logEntries[0].m_level, LogLevel::Info);
 
-    EXPECT_STREQ(mock->m_logEntries[1].m_text.c_str(), "Debug Entry");
+	EXPECT_STREQ(mock->m_logEntries[1].m_text.c_str(), "Debug Entry");
 	EXPECT_EQ(mock->m_logEntries[1].m_level, LogLevel::Debug);
 
-    EXPECT_STREQ(mock->m_logEntries[2].m_text.c_str(), "Error text");
+	EXPECT_STREQ(mock->m_logEntries[2].m_text.c_str(), "Error text");
 	EXPECT_EQ(mock->m_logEntries[2].m_level, LogLevel::Error);
 }
 
+TEST(LogOutput, MockCopiesVectorInOrder) {
+	LogOutputMock mock;
+	std::vector<LogEntry> entries{
+	        {LogLevel::Info, "Vector entry 1", "time1"},
+	        {LogLevel::Debug, "Vector entry 2", "time2"},
+	};
+
+	mock.Write(entries);
+	mock.Write(LogEntry{LogLevel::Error, "Single entry", "time3"});
+
+	ASSERT_EQ(mock.m_logEntries.size(), 3u);
+	EXPECT_EQ(mock.m_logEntries[0].m_text, "Vector entry 1");
+	EXPECT_EQ(mock.m_logEntries[1].m_text, "Vector entry 2");
+	EXPECT_EQ(mock.m_logEntries[2].m_text, "Single entry");
+}
+
+TEST(LogOutput, ConsoleUsesClog) {
+	LogOutputConsole console;
+	std::ostringstream capture;
+	auto* originalBuffer = std::clog.rdbuf(capture.rdbuf());
+
+	console.Write(LogEntry{LogLevel::Info, "Console entry", "2023-02-03 15:47:00"});
+	console.Write(std::vector<LogEntry>{{LogLevel::Warning, "Vector console entry", "2023-02-03 15:48:00"}});
+
+	std::clog.rdbuf(originalBuffer);
+
+	const auto output = capture.str();
+	EXPECT_NE(output.find("[Info] Console entry"), std::string::npos);
+	EXPECT_NE(output.find("[Warning] Vector console entry"), std::string::npos);
+}
+
 TEST(LogOutput, FileBasic) {
-    auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt");
+	auto logFile1 = std::make_shared<LogOutputFile>("Log1.txt");
 	auto logFile2 = std::make_shared<LogOutputFile>("Log2.txt");
 
-    LogConfig config;
+	LogConfig config;
 	config.AddLogOutput(logFile1);
 	config.AddLogOutput(logFile2);
 
-	std::array<std::string, 3> expectOutput {
-		"[Info] This is a test.",
-		"[Debug] Debug Entry",
-		"[Error] Error text"
-	};
+	std::array<std::string, 3> expectOutput{"[Info] This is a test.", "[Debug] Debug Entry", "[Error] Error text"};
 
 	//! Lambda to check a files content is the expectedOutput.
 	auto compareExpect = [&expectOutput](const std::string& fileName) {
@@ -56,7 +85,7 @@ TEST(LogOutput, FileBasic) {
 		std::ifstream file(fileName.c_str());
 		unsigned counter = 0;
 		std::string text;
-		while(getline(file, text)) {
+		while (getline(file, text)) {
 			// line contains the timestap so we use .find()
 			EXPECT_TRUE(text.find(expectOutput[counter]) != std::string::npos);
 			++counter;
@@ -67,7 +96,7 @@ TEST(LogOutput, FileBasic) {
 	// Write data to file
 	{
 		Logger logger = Logger(config);
-		logger.Log(LogLevel::Info,"This is a test.");
+		logger.Log(LogLevel::Info, "This is a test.");
 		logger.Log(LogLevel::Debug, "Debug Entry");
 		logger.Log(LogLevel::Error, "Error text");
 	}
@@ -83,35 +112,29 @@ TEST(LogOutput, FileBasic) {
 
 TEST(LogOutput, FileMaxSize) {
 	static constexpr std::uintmax_t maxSize = 50;
-    auto logFile = std::make_shared<LogOutputFile>("Logfile.txt", maxSize);
+	auto logFile = std::make_shared<LogOutputFile>("Logfile.txt", maxSize);
 
-    LogConfig config;
+	LogConfig config;
 	config.AddLogOutput(logFile);
 
 	// With timestamp/loglevel, this string produces output > maxSize Bytes
 	const std::string testString('a', maxSize);
 
 	// Write to output file
-	{
-		Logger(config).Log(LogLevel::Info, testString);
-	}
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after next write
+	{ Logger(config).Log(LogLevel::Info, testString); }
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after next write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Wrapping happens after a write
-	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt"));  // Does not exist yet
 
 	// Less than maxSize Bytes
-	{
-		Logger(config).Log(LogLevel::Info, "a");
-	}
-	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));     // New write -> Create file again
+	{ Logger(config).Log(LogLevel::Info, "a"); }
+	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));  // New write -> Create file again
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
-	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt"));  // Does not exist yet
 
 	// Fill the current log file
-	{
-		Logger(config).Log(LogLevel::Debug, testString);
-	}
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
+	{ Logger(config).Log(LogLevel::Debug, testString); }
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after new write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
 	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Newly created from write
 	EXPECT_FALSE(std::filesystem::exists("Logfile(3).txt"));  // Does not exist yet
@@ -122,19 +145,20 @@ TEST(LogOutput, FileMaxSize) {
 		logger.Log(LogLevel::Debug, testString);
 		logger.Log(LogLevel::Debug, testString);
 	}
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after new write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
 	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Still exists
-	EXPECT_TRUE(std::filesystem::exists("Logfile(3).txt"));  // Newly created from write -> One log write always to one file
+	EXPECT_TRUE(
+	        std::filesystem::exists("Logfile(3).txt"));  // Newly created from write -> One log write always to one file
 	EXPECT_FALSE(std::filesystem::exists("Logfile(4).txt"));  // Does not exist
 
 	// Cleanup
-	EXPECT_NE(std::remove("Logfile.txt"), 0);     // Does not exist
+	EXPECT_NE(std::remove("Logfile.txt"), 0);  // Does not exist
 	EXPECT_EQ(std::remove("Logfile(1).txt"), 0);
 	EXPECT_EQ(std::remove("Logfile(2).txt"), 0);
 	EXPECT_EQ(std::remove("Logfile(3).txt"), 0);
 	EXPECT_NE(std::remove("Logfile(4).txt"), 0);  // Does not exist
 }
 
-}
-}
+}  // namespace GTest
+}  // namespace Logging

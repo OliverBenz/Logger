@@ -3,10 +3,7 @@
 namespace Logging {
 
 void LogOutputMock::Write(const std::vector<LogEntry>& logEntries) {
-	for (std::size_t i = 0; i != logEntries.size(); ++i) {
-		// TODO: Properly copy all at once..
-		m_logEntries.emplace_back(logEntries[i]);
-	}
+	m_logEntries.insert(m_logEntries.end(), logEntries.begin(), logEntries.end());
 }
 
 void LogOutputMock::Write(const LogEntry& entry) {
