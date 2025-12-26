@@ -18,53 +18,76 @@ void LogOutputFile::RotateFile() {
 
 	const auto baseName = extension.empty() ? originalPath.filename().string() : stem;
 
-	unsigned count = 1;
+	std::error_code ec;
+    constexpr unsigned kMaxRotations = 10000;
+	unsigned count = 1u;
 	std::filesystem::path newFilePath;
 	do {
+		if (count > kMaxRotations) {
+			return;
+		}
+
 		auto rotatedName = baseName + "(" + std::to_string(count) + ")" + extension;
 		newFilePath = parent.empty() ? std::filesystem::path(rotatedName) : parent / rotatedName;
 		++count;
-	} while (std::filesystem::exists(newFilePath));
+	} while (std::filesystem::exists(newFilePath, ec));
+	ec.clear(); // // Any errors during probing are ignored by design
 
-	std::error_code ec;
 	std::filesystem::rename(originalPath, newFilePath, ec);
-	if (ec) {
-		throw std::filesystem::filesystem_error("Failed to rotate log file", originalPath, newFilePath, ec);
-	}
+    if (ec == std::errc::cross_device_link) {
+        // Best-effort fallback
+        std::filesystem::copy_file(
+            originalPath,
+            newFilePath,
+            std::filesystem::copy_options::overwrite_existing,
+            ec);
+
+        if (!ec) {
+            std::filesystem::remove(originalPath, ec);
+        }
+    }
+
+    // Any failure beyond this point is intentionally ignored.
 }
 
 void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 	std::unique_lock<std::mutex> lock(m_writeLock);
 
 	std::ofstream outfile(m_filePath, std::ios::out | std::ios::app);
-	outfile.exceptions(std::ios::failbit | std::ios::badbit);
+	if (!outfile.is_open()) {
+		return;
+	}
 
 	for (const auto& entry: logEntries) {
 		outfile << entry.OutputText() << "\n";
 	}
-
-	// Check max filesize reached
-	const auto fileSize = outfile.tellp();
 	outfile.close();
-	if (fileSize != std::ofstream::pos_type(-1) && static_cast<std::uintmax_t>(fileSize) >= m_maxFileSize) {
-		RotateFile();
-	}
+
+	// Check max file size reached
+    std::error_code ec;
+    const auto fileSize = std::filesystem::file_size(m_filePath, ec);
+    if (!ec && fileSize >= m_maxFileSize) {
+        RotateFile();
+    }
 }
 
 void LogOutputFile::Write(const LogEntry& entry) {
 	std::unique_lock<std::mutex> lock(m_writeLock);
 
 	std::ofstream outfile(m_filePath, std::ios::out | std::ios::app);
-	outfile.exceptions(std::ios::failbit | std::ios::badbit);
+	if (!outfile.is_open()) {
+		return;
+	}
 
 	outfile << entry.OutputText() << "\n";
+	outfile.close();
 
 	// Check max filesize reached
-	const auto fileSize = outfile.tellp();
-	outfile.close();
-	if (fileSize != std::ofstream::pos_type(-1) && static_cast<std::uintmax_t>(fileSize) >= m_maxFileSize) {
-		RotateFile();
-	}
+    std::error_code ec;
+    const auto fileSize = std::filesystem::file_size(m_filePath, ec);
+    if (!ec && fileSize >= m_maxFileSize) {
+        RotateFile();
+    }
 }
 
 std::string LogOutputFile::FilePath() const {
