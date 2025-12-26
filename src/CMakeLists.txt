@@ -11,12 +11,10 @@ add_library(${targetName} STATIC
 )
 add_library(Logger::Logger ALIAS ${targetName})
 
-# Link to thread module.
-target_link_libraries(${targetName})
 target_include_directories(${targetName}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-        $<INSTALL_INTERFACE:include/Logger>
+        $<INSTALL_INTERFACE:include>
 )
 set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
 
@@ -40,9 +38,12 @@ if(LOGGER_ENABLE_INSTALL)
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Logger
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
-    install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Logger)
+	install(
+		DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/Logger
+		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	)
     install(EXPORT LoggerTargets
         FILE LoggerTargets.cmake
         NAMESPACE Logger::

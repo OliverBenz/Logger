@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 
 include(FetchContent)
 
@@ -16,3 +16,6 @@ set_target_properties(gtest      PROPERTIES FOLDER "${ideFolderExternal}")
 set_target_properties(gtest_main PROPERTIES FOLDER "${ideFolderExternal}")
 set_target_properties(gmock      PROPERTIES FOLDER "${ideFolderExternal}")
 set_target_properties(gmock_main PROPERTIES FOLDER "${ideFolderExternal}")
+
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
