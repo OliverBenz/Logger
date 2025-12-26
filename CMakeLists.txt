@@ -10,13 +10,6 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     set(LOGGER_IS_TOP_LEVEL ON)
 endif()
 
-# Normalize install prefix for Unix-like systems (prefer /opt).
-if(UNIX AND NOT WIN32)
-    if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR CMAKE_INSTALL_PREFIX MATCHES "^/var/empty")
-        set(CMAKE_INSTALL_PREFIX "/opt" CACHE PATH "Install path prefix" FORCE)
-    endif()
-endif()
-
 # Project Options
 option(LOGGER_BUILD_TESTS "Build Logger unit tests" ${LOGGER_IS_TOP_LEVEL})
 option(LOGGER_BUILD_EXAMPLES "Build Logger examples" ${LOGGER_IS_TOP_LEVEL})
@@ -54,7 +47,7 @@ endif()
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/LoggerConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake
-    INSTALL_DESTINATION ${LOGGER_INSTALL_BASE}/lib/cmake
+    INSTALL_DESTINATION ${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger
 )
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake
@@ -62,16 +55,10 @@ write_basic_package_version_file(
     COMPATIBILITY SameMajorVersion
 )
 
-export(
-    EXPORT LoggerTargets
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/LoggerTargets.cmake
-    NAMESPACE Logger::
-)
-
 if(LOGGER_ENABLE_INSTALL)
     install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake
-        DESTINATION ${LOGGER_INSTALL_BASE}/lib/cmake
+        DESTINATION ${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger
     )
-endif()
+ endif()
