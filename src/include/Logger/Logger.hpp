@@ -1,10 +1,9 @@
 #pragma once
 
-#include "LogConfig.hpp"
-#include "LogEntry.hpp"
-#include "LogLevel.hpp"
+#include "Logger/LogConfig.hpp"
+#include "Logger/LogEntry.hpp"
+#include "Logger/LogLevel.hpp"
 
-#include <mutex>
 #include <vector>
 
 namespace Logging {

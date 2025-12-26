@@ -1,4 +1,6 @@
-#include "LogOutputConsole.hpp"
+#include "Logger/LogOutputConsole.hpp"
+
+#include <iostream>
 
 namespace Logging {
 

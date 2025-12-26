@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "LogConfig.hpp"
-#include "LogOutputMock.hpp"
-#include "Profiler.hpp"
+#include "Logger/LogConfig.hpp"
+#include "Logger/LogOutputMock.hpp"
+#include "Logger/Profiler.hpp"
 
 #include <chrono>
 #include <thread>

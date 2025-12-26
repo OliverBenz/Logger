@@ -1,8 +1,9 @@
-#include "LogLevel.hpp"
-#include "LogOutputConsole.hpp"
-#include "LogOutputFile.hpp"
-#include "LogOutputMock.hpp"
-#include "Logger.hpp"
+#include "Logger/LogLevel.hpp"
+#include "Logger/LogOutputConsole.hpp"
+#include "Logger/LogOutputFile.hpp"
+#include "Logger/LogOutputMock.hpp"
+#include "Logger/Logger.hpp"
+
 #include <iostream>
 
 int main() {

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "LogLevel.hpp"
+#include "Logger/LogLevel.hpp"
 
 namespace Logging {
 namespace GTest {

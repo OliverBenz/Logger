@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Logger.hpp"
+#include "Logger/Logger.hpp"
+
 #include <chrono>
+#include <string>
 
 namespace Logging {
 

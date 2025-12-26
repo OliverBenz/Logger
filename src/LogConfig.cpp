@@ -1,4 +1,4 @@
-#include "LogConfig.hpp"
+#include "Logger/LogConfig.hpp"
 
 namespace Logging {
 
