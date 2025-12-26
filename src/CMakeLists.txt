@@ -11,12 +11,13 @@ add_library(${targetName} STATIC
 )
 add_library(Logger::Logger ALIAS ${targetName})
 
+target_compile_features(${targetName} PUBLIC cxx_std_20)
 target_include_directories(${targetName}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:${LOGGER_INSTALL_BASE}/include/Logger>
 )
-set_target_properties(${targetName} PROPERTIES FOLDER "${ideFolderSource}")
+set_target_properties(${targetName} PROPERTIES FOLDER "${IDE_FOLDER_SOURCE}")
 
 # Setup project settings
 set_project_warnings(${targetName})  # Which warnings to enable
@@ -24,7 +25,7 @@ set_compile_options(${targetName})   # Which extra compiler flags to enable
 set_output_directory(${targetName})  # Set the output directory of the library
 
 # Copy header files to output after build
-copy_headers_to_output("${targetName}" "${headers}" "")
+copy_headers_to_output("${targetName}" "${headers}" "Logger")
 
 # Specify version
 target_compile_definitions(${targetName} PUBLIC LOGVERSION_MAJOR=1)
@@ -35,18 +36,17 @@ target_compile_definitions(${targetName} PUBLIC LOGVERSION_PATCH=0)
 if(LOGGER_ENABLE_INSTALL)
     install(TARGETS ${targetName}
         EXPORT LoggerTargets
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        ARCHIVE DESTINATION ${LOGGER_INSTALL_BASE}/lib/${LOGGER_INSTALL_ARCH}/${LOGGER_INSTALL_CONFIG}
+        LIBRARY DESTINATION ${LOGGER_INSTALL_BASE}/lib/${LOGGER_INSTALL_ARCH}/${LOGGER_INSTALL_CONFIG}
+        RUNTIME DESTINATION ${LOGGER_INSTALL_BASE}/bin/${LOGGER_INSTALL_ARCH}/${LOGGER_INSTALL_CONFIG}
     )
 	install(
 		DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/include/Logger
-		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+		DESTINATION ${LOGGER_INSTALL_BASE}/include
 	)
     install(EXPORT LoggerTargets
         FILE LoggerTargets.cmake
         NAMESPACE Logger::
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Logger
+        DESTINATION ${LOGGER_INSTALL_BASE}/lib/cmake
     )
 endif()
