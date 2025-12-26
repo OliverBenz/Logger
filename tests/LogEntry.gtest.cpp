@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "LogEntry.hpp"
+#include "Logger/LogEntry.hpp"
+
 #include <regex>
 
 namespace Logging {

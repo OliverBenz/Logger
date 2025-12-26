@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ILogOutput.hpp"
-#include "LogLevel.hpp"
+#include "Logger/ILogOutput.hpp"
+#include "Logger/LogLevel.hpp"
 
 #include <memory>
 #include <vector>

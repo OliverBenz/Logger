@@ -1,6 +1,7 @@
 #pragma once
 
-#include "LogEntry.hpp"
+#include "Logger/LogEntry.hpp"
+
 #include <vector>
 
 namespace Logging {

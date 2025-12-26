@@ -1,8 +1,7 @@
 #pragma once
 
-#include "LogLevel.hpp"
+#include "Logger/LogLevel.hpp"
 
-#include <sstream>
 #include <string>
 
 namespace Logging {

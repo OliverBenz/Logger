@@ -1,4 +1,5 @@
-#include "Profiler.hpp"
+#include "Logger/Profiler.hpp"
+
 #include <format>
 
 namespace Logging {

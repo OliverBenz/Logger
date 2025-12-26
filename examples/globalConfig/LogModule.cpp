@@ -1,8 +1,8 @@
 #include "LogModule.hpp"
 
-#include "LogConfig.hpp"
-#include "LogOutputConsole.hpp"
-#include "LogOutputFile.hpp"
+#include "Logger/LogConfig.hpp"
+#include "Logger/LogOutputConsole.hpp"
+#include "Logger/LogOutputFile.hpp"
 
 Logging::LogConfig config;
 

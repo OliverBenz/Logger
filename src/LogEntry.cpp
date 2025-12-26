@@ -1,4 +1,4 @@
-#include "LogEntry.hpp"
+#include "Logger/LogEntry.hpp"
 
 #include <format>
 

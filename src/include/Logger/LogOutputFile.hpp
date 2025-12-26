@@ -1,8 +1,11 @@
 #pragma once
 
-#include "ILogOutput.hpp"
+#include "Logger/ILogOutput.hpp"
+#include "Logger/LogEntry.hpp"
+
 #include <mutex>
 #include <string>
+#include <vector>
 
 namespace Logging {
 

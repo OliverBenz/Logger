@@ -1,4 +1,4 @@
-#include "LogOutputMock.hpp"
+#include "Logger/LogOutputMock.hpp"
 
 namespace Logging {
 
