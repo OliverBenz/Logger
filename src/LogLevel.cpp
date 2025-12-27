@@ -20,4 +20,4 @@ std::string LevelToText(LogLevel level) {
 	return "";
 }
 
-}  // namespace Logging
+} // namespace Logging

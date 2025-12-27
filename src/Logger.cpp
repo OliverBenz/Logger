@@ -35,4 +35,4 @@ void Logger::Log(const LogLevel level, const std::string& text) {
 	m_entries.emplace_back(entry);
 }
 
-}  // namespace Logging
+} // namespace Logging

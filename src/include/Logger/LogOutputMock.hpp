@@ -17,4 +17,4 @@ public:
 	std::vector<LogEntry> m_logEntries;
 };
 
-}  // namespace Logging
+} // namespace Logging

@@ -14,5 +14,5 @@ TEST(LogLevel, LevelToText) {
 	EXPECT_STREQ(LevelToText(LogLevel::Critical).c_str(), "[Critical]");
 }
 
-}  // namespace GTest
-}  // namespace Logging
+} // namespace GTest
+} // namespace Logging

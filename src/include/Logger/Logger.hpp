@@ -22,8 +22,8 @@ public:
 	void Log(LogLevel level, const std::string& text);
 
 private:
-	LogConfig& m_config;  //!< Configuration by which this logger object should adhere.
-	std::vector<LogEntry> m_entries;  //!< List of log entries received.
+	LogConfig& m_config;             //!< Configuration by which this logger object should adhere.
+	std::vector<LogEntry> m_entries; //!< List of log entries received.
 };
 
-}  // namespace Logging
+} // namespace Logging

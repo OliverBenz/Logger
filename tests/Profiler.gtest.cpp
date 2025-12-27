@@ -39,5 +39,5 @@ TEST(Profiler, LogsStartStepsAndEnd) {
 	EXPECT_NE(mock->m_logEntries[3].m_text.find("ProfileCase"), std::string::npos);
 }
 
-}  // namespace GTest
-}  // namespace Logging
+} // namespace GTest
+} // namespace Logging

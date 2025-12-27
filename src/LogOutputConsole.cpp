@@ -14,4 +14,4 @@ void LogOutputConsole::Write(const LogEntry& entry) {
 	std::clog << entry.OutputText() << "\n";
 }
 
-}  // namespace Logging
+} // namespace Logging

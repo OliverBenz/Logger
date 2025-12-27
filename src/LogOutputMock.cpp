@@ -10,4 +10,4 @@ void LogOutputMock::Write(const LogEntry& entry) {
 	m_logEntries.emplace_back(entry);
 }
 
-}  // namespace Logging
+} // namespace Logging

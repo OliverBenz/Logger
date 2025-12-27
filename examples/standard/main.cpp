@@ -10,7 +10,7 @@ int main() {
 	std::cout << "Version: " << LOGVERSION_MAJOR << "." << LOGVERSION_MINOR << "." << LOGVERSION_PATCH << std::endl;
 
 	static Logging::LogConfig config;
-	auto mock = std::make_shared<Logging::LogOutputMock>();
+	auto mock    = std::make_shared<Logging::LogOutputMock>();
 	auto logFile = std::make_shared<Logging::LogOutputFile>("Filename.txt");
 
 	config.AddLogOutput(std::make_shared<Logging::LogOutputConsole>());

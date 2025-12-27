@@ -13,4 +13,4 @@ public:
 	void Write(const LogEntry& entry) override;
 };
 
-}  // namespace Logging
+} // namespace Logging

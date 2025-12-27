@@ -26,4 +26,4 @@ void LogConfig::SetMinLogLevel(const LogLevel logLevel) {
 	m_minLogLevel = logLevel;
 }
 
-}  // namespace Logging
+} // namespace Logging

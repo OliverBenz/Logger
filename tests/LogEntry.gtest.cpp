@@ -22,5 +22,5 @@ TEST(LogEntry, OutputTextPattern) {
 	EXPECT_TRUE(std::regex_match(output, pattern));
 }
 
-}  // namespace GTest
-}  // namespace Logging
+} // namespace GTest
+} // namespace Logging
