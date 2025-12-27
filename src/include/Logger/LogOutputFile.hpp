@@ -3,11 +3,22 @@
 #include "Logger/ILogOutput.hpp"
 #include "Logger/LogEntry.hpp"
 
+#include <filesystem>
 #include <mutex>
 #include <string>
 #include <vector>
 
 namespace Logging {
+
+//! Get the default logfile output directory. Including a subdirectory for the application.
+/*! \returns
+ *  Windows:    "%FOLDERID_LocalAppData%/<appName>/logs"
+ *  MacOS:      "%HOME%/Library/Logs/<appName>"
+ *  Linux/Unix: "%XDG_STATE_HOME%/<appName>/logs" else "%HOME%/.local/state/<appName>/logs"
+ *  Fallback:   "<CurrentAppPath>/logs"
+ */
+std::filesystem::path GetDefaultLogDir(const std::string& appName);
+
 
 class LogOutputFile : public ILogOutput {
 public:

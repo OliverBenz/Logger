@@ -1,8 +1,14 @@
 #include "Logger/LogOutputFile.hpp"
 
-#include <filesystem>
+#include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <system_error>
+
+#ifdef _WIN32
+#include <shlobj.h>
+#include <windows.h>
+#endif
 
 namespace Logging {
 
@@ -88,6 +94,37 @@ void LogOutputFile::Write(const LogEntry& entry) {
 
 std::string LogOutputFile::FilePath() const {
 	return m_filePath;
+}
+
+std::filesystem::path GetDefaultLogDir(const std::string& appName) {
+#if defined(_WIN32)
+	// 1) Windows: %LOCALAPPDATA%/<AppName>/logs
+	PWSTR path = nullptr;
+	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path))) {
+		std::filesystem::path p(path);
+		CoTaskMemFree(path);
+		return p / appName / "logs";
+	}
+#elif defined(__APPLE__)
+	// 2) macOS: ~/Library/Logs/<AppName>
+	const char* home = std::getenv("HOME");
+	if (home && std::strlen(home) > 0) {
+		return std::filesystem::path(home) / "Library/Logs" / appName;
+	}
+#else
+	// 3) Linux/Unix: XDG_STATE_HOME/<AppName>/logs or ~/.local/state/<AppName>/logs
+	const char* state = std::getenv("XDG_STATE_HOME");
+	if (state && std::strlen(state) > 0) {
+		return std::filesystem::path(state) / appName / "logs";
+	}
+	const char* home = std::getenv("HOME");
+	if (home && std::strlen(home) > 0) {
+		return std::filesystem::path(home) / ".local/state" / appName / "logs";
+	}
+#endif
+
+	// 4) Fallback
+	return std::filesystem::current_path() / "logs";
 }
 
 } // namespace Logging
