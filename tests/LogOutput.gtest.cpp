@@ -113,6 +113,7 @@ TEST(LogOutput, FileBasic) {
 
 TEST(LogOutput, FileMaxSize) {
 	static constexpr std::uintmax_t maxSize = 50;
+
 	auto logFile = std::make_shared<LogOutputFile>("Logfile.txt", maxSize);
 
 	LogConfig config;
@@ -123,22 +124,22 @@ TEST(LogOutput, FileMaxSize) {
 
 	// Write to output file
 	{ Logger(config).Log(LogLevel::Info, testString); }
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after next write
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after next write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Wrapping happens after a write
-	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt"));  // Does not exist yet
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
 
 	// Less than maxSize Bytes
 	{ Logger(config).Log(LogLevel::Info, "a"); }
-	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));  // New write -> Create file again
+	EXPECT_TRUE(std::filesystem::exists("Logfile.txt"));     // New write -> Create file again
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
-	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt"));  // Does not exist yet
+	EXPECT_FALSE(std::filesystem::exists("Logfile(2).txt")); // Does not exist yet
 
 	// Fill the current log file
 	{ Logger(config).Log(LogLevel::Debug, testString); }
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after new write
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));    // New file only created after new write
 	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
 	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Newly created from write
-	EXPECT_FALSE(std::filesystem::exists("Logfile(3).txt"));  // Does not exist yet
+	EXPECT_FALSE(std::filesystem::exists("Logfile(3).txt")); // Does not exist yet
 
 	// Fill two files worth (whole will be in one file -> One write operation)
 	{
@@ -146,20 +147,20 @@ TEST(LogOutput, FileMaxSize) {
 		logger.Log(LogLevel::Debug, testString);
 		logger.Log(LogLevel::Debug, testString);
 	}
-	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));  // New file only created after new write
-	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt"));  // Still exists
-	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt"));  // Still exists
+	EXPECT_FALSE(std::filesystem::exists("Logfile.txt"));   // New file only created after new write
+	EXPECT_TRUE(std::filesystem::exists("Logfile(1).txt")); // Still exists
+	EXPECT_TRUE(std::filesystem::exists("Logfile(2).txt")); // Still exists
 	EXPECT_TRUE(
-	        std::filesystem::exists("Logfile(3).txt"));  // Newly created from write -> One log write always to one file
-	EXPECT_FALSE(std::filesystem::exists("Logfile(4).txt"));  // Does not exist
+	        std::filesystem::exists("Logfile(3).txt")); // Newly created from write -> One log write always to one file
+	EXPECT_FALSE(std::filesystem::exists("Logfile(4).txt")); // Does not exist
 
 	// Cleanup
-	EXPECT_NE(std::remove("Logfile.txt"), 0);  // Does not exist
+	EXPECT_NE(std::remove("Logfile.txt"), 0); // Does not exist
 	EXPECT_EQ(std::remove("Logfile(1).txt"), 0);
 	EXPECT_EQ(std::remove("Logfile(2).txt"), 0);
 	EXPECT_EQ(std::remove("Logfile(3).txt"), 0);
-	EXPECT_NE(std::remove("Logfile(4).txt"), 0);  // Does not exist
+	EXPECT_NE(std::remove("Logfile(4).txt"), 0); // Does not exist
 }
 
-}  // namespace GTest
-}  // namespace Logging
+} // namespace GTest
+} // namespace Logging

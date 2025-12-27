@@ -8,4 +8,4 @@ std::string LogEntry::OutputText() const {
 	return std::format("{} {} {}", m_time, LevelToText(m_level), m_text);
 }
 
-}  // namespace Logging
+} // namespace Logging

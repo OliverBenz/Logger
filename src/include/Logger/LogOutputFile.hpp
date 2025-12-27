@@ -32,9 +32,9 @@ private:
 	void RotateFile();
 
 private:
-	std::string m_filePath;  //!< Path to the log file.
-	std::uintmax_t m_maxFileSize;  //!< Maximum size of a logfile before starting a new file.
-	std::mutex m_writeLock;  //!< Lock so file is only opened on one thread.
+	std::string m_filePath;       //!< Path to the log file.
+	std::uintmax_t m_maxFileSize; //!< Maximum size of a logfile before starting a new file.
+	std::mutex m_writeLock;       //!< Lock so file is only opened on one thread.
 };
 
-}  // namespace Logging
+} // namespace Logging

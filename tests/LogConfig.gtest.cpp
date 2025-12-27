@@ -39,7 +39,7 @@ TEST(LogConfig, DisableLogging) {
 	logger.Log(LogLevel::Debug, "Testing Entry 2");
 	logger.Flush();
 
-	EXPECT_EQ(mock->m_logEntries.size(), 2u);  // Still 2 entries
+	EXPECT_EQ(mock->m_logEntries.size(), 2u); // Still 2 entries
 }
 
 TEST(LogConfig, MinLogLevel) {
@@ -84,8 +84,8 @@ TEST(LogConfig, MinLogLevel) {
 
 TEST(LogConfig, LogOutputs) {
 	static Logging::LogConfig config;
-	auto mock = std::make_shared<Logging::LogOutputMock>();
-	auto logFile = std::make_shared<Logging::LogOutputFile>("LogSectionA.txt");
+	auto mock     = std::make_shared<Logging::LogOutputMock>();
+	auto logFile  = std::make_shared<Logging::LogOutputFile>("LogSectionA.txt");
 	auto logFile1 = std::make_shared<Logging::LogOutputFile>("LogSectionB.txt");
 	auto logFile2 = std::make_shared<Logging::LogOutputFile>("LogSectionC.txt");
 
@@ -98,5 +98,5 @@ TEST(LogConfig, LogOutputs) {
 	EXPECT_EQ(config.LogOutputs().size(), 5u);
 }
 
-}  // namespace GTest
-}  // namespace Logging
+} // namespace GTest
+} // namespace Logging

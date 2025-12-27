@@ -9,11 +9,11 @@ namespace Logging {
 //! Defines what functionality a log output has to define.
 class ILogOutput {
 protected:
-	ILogOutput() = default;
-	ILogOutput(ILogOutput&& other) = default;
+	ILogOutput()                        = default;
+	ILogOutput(ILogOutput&& other)      = default;
 	ILogOutput(const ILogOutput& other) = default;
 
-	ILogOutput& operator=(ILogOutput&& other) = default;
+	ILogOutput& operator=(ILogOutput&& other)      = default;
 	ILogOutput& operator=(ILogOutput const& other) = default;
 
 public:
@@ -26,4 +26,4 @@ public:
 	virtual void Write(const LogEntry& entry) = 0;
 };
 
-}  // namespace Logging
+} // namespace Logging

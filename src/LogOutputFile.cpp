@@ -12,15 +12,15 @@ LogOutputFile::LogOutputFile(const std::string& filePath, std::size_t maxFileSiz
 
 void LogOutputFile::RotateFile() {
 	const std::filesystem::path originalPath(m_filePath);
-	const auto parent = originalPath.parent_path();
-	const auto stem = originalPath.stem().string();
+	const auto parent    = originalPath.parent_path();
+	const auto stem      = originalPath.stem().string();
 	const auto extension = originalPath.extension().string();
 
 	const auto baseName = extension.empty() ? originalPath.filename().string() : stem;
 
 	std::error_code ec;
-    constexpr unsigned kMaxRotations = 10000;
-	unsigned count = 1u;
+	constexpr unsigned kMaxRotations = 10000;
+	unsigned count                   = 1u;
 	std::filesystem::path newFilePath;
 	do {
 		if (count > kMaxRotations) {
@@ -28,26 +28,22 @@ void LogOutputFile::RotateFile() {
 		}
 
 		auto rotatedName = baseName + "(" + std::to_string(count) + ")" + extension;
-		newFilePath = parent.empty() ? std::filesystem::path(rotatedName) : parent / rotatedName;
+		newFilePath      = parent.empty() ? std::filesystem::path(rotatedName) : parent / rotatedName;
 		++count;
 	} while (std::filesystem::exists(newFilePath, ec));
 	ec.clear(); // // Any errors during probing are ignored by design
 
 	std::filesystem::rename(originalPath, newFilePath, ec);
-    if (ec == std::errc::cross_device_link) {
-        // Best-effort fallback
-        std::filesystem::copy_file(
-            originalPath,
-            newFilePath,
-            std::filesystem::copy_options::overwrite_existing,
-            ec);
+	if (ec == std::errc::cross_device_link) {
+		// Best-effort fallback
+		std::filesystem::copy_file(originalPath, newFilePath, std::filesystem::copy_options::overwrite_existing, ec);
 
-        if (!ec) {
-            std::filesystem::remove(originalPath, ec);
-        }
-    }
+		if (!ec) {
+			std::filesystem::remove(originalPath, ec);
+		}
+	}
 
-    // Any failure beyond this point is intentionally ignored.
+	// Any failure beyond this point is intentionally ignored.
 }
 
 void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
@@ -64,11 +60,11 @@ void LogOutputFile::Write(const std::vector<LogEntry>& logEntries) {
 	outfile.close();
 
 	// Check max file size reached
-    std::error_code ec;
-    const auto fileSize = std::filesystem::file_size(m_filePath, ec);
-    if (!ec && fileSize >= m_maxFileSize) {
-        RotateFile();
-    }
+	std::error_code ec;
+	const auto fileSize = std::filesystem::file_size(m_filePath, ec);
+	if (!ec && fileSize >= m_maxFileSize) {
+		RotateFile();
+	}
 }
 
 void LogOutputFile::Write(const LogEntry& entry) {
@@ -83,15 +79,15 @@ void LogOutputFile::Write(const LogEntry& entry) {
 	outfile.close();
 
 	// Check max filesize reached
-    std::error_code ec;
-    const auto fileSize = std::filesystem::file_size(m_filePath, ec);
-    if (!ec && fileSize >= m_maxFileSize) {
-        RotateFile();
-    }
+	std::error_code ec;
+	const auto fileSize = std::filesystem::file_size(m_filePath, ec);
+	if (!ec && fileSize >= m_maxFileSize) {
+		RotateFile();
+	}
 }
 
 std::string LogOutputFile::FilePath() const {
 	return m_filePath;
 }
 
-}  // namespace Logging
+} // namespace Logging

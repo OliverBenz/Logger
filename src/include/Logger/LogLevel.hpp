@@ -8,4 +8,4 @@ enum class LogLevel { Any = 000, Info = 100, Debug = 200, Warning = 300, Error =
 
 std::string LevelToText(LogLevel level);
 
-}  // namespace Logging
+} // namespace Logging
