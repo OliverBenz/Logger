@@ -1,19 +1,18 @@
 name: CMake
 
-on: [push]
+on: [push, pull_request]
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   Build_And_Test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Fetch submodules
-      run: git submodule update --init --recursive
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -23,20 +22,12 @@ jobs:
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DLOGGER_BUILD_TESTS=ON -DLOGGER_BUILD_EXAMPLES=ON
 
     - name: Build
-      working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build . --config $BUILD_TYPE -j
+      run: cmake --build build --config $BUILD_TYPE -j
 
     - name: Run Tests
-      working-directory: ${{runner.workspace}}/build/out/bin/x64/Release
       shell: bash
-      run: ./Logger.GTest
-
-    - name: Run Examples
-      working-directory: ${{runner.workspace}}/build/out/bin/x64/Release
-      shell: bash
-      run: ./Example.Standard
+      run: ctest --test-dir build --output-on-failure
