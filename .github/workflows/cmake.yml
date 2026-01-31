@@ -29,14 +29,14 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build . --config $BUILD_TYPE
+      run: cmake --build . --config $BUILD_TYPE -j
 
     - name: Run Tests
-      working-directory: ${{runner.workspace}}/build/out/bin
+      working-directory: ${{runner.workspace}}/build/out/bin/x64/Release
       shell: bash
       run: ./Logger.GTest
 
     - name: Run Examples
-      working-directory: ${{runner.workspace}}/build/out/bin
+      working-directory: ${{runner.workspace}}/build/out/bin/x64/Release
       shell: bash
       run: ./Example.Standard
