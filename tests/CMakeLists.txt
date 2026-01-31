@@ -18,4 +18,6 @@ set_project_warnings(${targetName})  # Which warnings to enable
 set_compile_options(${targetName})   # Which extra compiler flags to enable
 set_output_directory(${targetName})  # Set the output directory of the library
 
-add_test(NAME Logger.UnitTests COMMAND ${targetName})
+# Add tests
+include(GoogleTest)
+gtest_discover_tests(${targetName})
