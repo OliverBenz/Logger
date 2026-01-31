@@ -34,31 +34,31 @@ project_settings_configure_install_layout(
     PROJECT_NAME ${PROJECT_NAME}
     INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}
 )
-add_subdirectory(src)
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/src")
 
 if(LOGGER_BUILD_TESTS)
     enable_testing()
-    add_subdirectory(tests)
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/tests")
 endif()
 if(LOGGER_BUILD_EXAMPLES)
-    add_subdirectory(examples)
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/examples")
 endif()
 
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/LoggerConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake
-    INSTALL_DESTINATION ${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/LoggerConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake"
+    INSTALL_DESTINATION "${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger"
 )
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 if(LOGGER_ENABLE_INSTALL)
     install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake
-        DESTINATION ${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger
+        "${CMAKE_CURRENT_BINARY_DIR}/LoggerConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/LoggerConfigVersion.cmake"
+        DESTINATION "${LOGGER_INSTALL_BASE}/${CMAKE_INSTALL_LIBDIR}/cmake/Logger"
     )
  endif()
